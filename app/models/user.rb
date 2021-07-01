@@ -5,7 +5,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
          has_many :tips
          has_many :favorites
-         validaates :username presence: true, uniqueness: true length: { in: 4..20 }
+         has_many :favorited_tips, through: :favorites, source: :tip 
+         validates :username, presence: true, uniqueness: true, length: { in: 4..20 }
          validates :email, presence: true, uniqueness: true
          def generate_jwt
           JWT.encode({ id: id,
