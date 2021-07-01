@@ -25,7 +25,27 @@ class API::V1::UsersController < ApiController
 
 
   def show 
-    @user = User.find_by(params[:id])
-    render json: 
+    user = User.find_by(params[:id])
+    favorites = user.favorited_tips.order('created_at DESC')
+    response = { user: user, favorites: favorites}
+    render json: response
+  end
+
+  def edit
+    user = User.find_by(params[:id])
+  end
+
+  def update
+    user = User.find(params[:id])
+    if user.update(user_params)
+      render json: { user: user}, status: 200
+    else
+      render json: { :message =>'User was not updated!' } , status: 400
+    end
+  end
+
+  private
+  def user_params
+    params.require(:user).permit(:username, :email, :password, :password_confirmation, :image)
   end
 end
