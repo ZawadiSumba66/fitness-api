@@ -7,4 +7,9 @@ class User < ApplicationRecord
          has_many :favorites
          validaates :username presence: true, uniqueness: true length: { in: 4..20 }
          validates :email, presence: true, uniqueness: true
+         def generate_jwt
+          JWT.encode({ id: id,
+                      exp: 60.days.from_now.to_i },
+                     Rails.application.secrets.secret_key_base)
+        end
 end
