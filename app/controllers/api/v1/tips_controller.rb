@@ -28,6 +28,7 @@ class Api::V1::TipsController < ApiController
     tip = Tip.find(params[:id])
     if tip
       render json: { tip: tip }, status: 200
+    else
       render json: { message: 'No tip found' }, status: 400
     end
   end

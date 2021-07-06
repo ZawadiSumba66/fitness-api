@@ -7,9 +7,9 @@ class API::V1::DirectUploadsController < ActiveStorage::DirectUploadsController
     priveta
 
     def direct_upload_json(blob)
-      blob.as_json(root: false, methods: :signed_id).merge(:service_url url_for(blob)).merge(
-          blob.service_url_direct_upload,
-          
+      blob.as_json(root: false, methods: :signed_id).merge(service_url: url_for(blob)).merge(
+          url: blob.service_url_direct_upload,  
+          headers: blob.service_headers_direct_upload 
       )
     end
 end
