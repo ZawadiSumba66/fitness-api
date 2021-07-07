@@ -11,7 +11,6 @@ Rails.application.routes.draw do
           post 'favorite', to: 'tips#favorite'
           post 'unfavourite', to: 'tips#unfavourite'
         end
-        post 'rails/active_storage/direct_uploads', to: 'direct_uploads#create'
       end
     end
 end
