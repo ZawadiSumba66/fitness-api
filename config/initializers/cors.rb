@@ -9,7 +9,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins 'example.com'
      # Make sure to change the * to the location of you frontend after deployment in order to secure your application
-    resource '*',
+    resource 'http://localhost:3000/',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head]
   end
