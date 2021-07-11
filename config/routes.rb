@@ -3,11 +3,13 @@ Rails.application.routes.draw do
     namespace :api do
       namespace :v1 do
         post :auth, to: 'authentication#create'
+        resources :tips
         resources :users
-        resources :users
-        resources :tips, only: %i[show create index]
+        resources :users, only: %i[show] do
+          resources :tips
+        end
         resources :favorites
-        resources :tips do
+        resources :tips, only: %i[show, index] do
           post 'favorite', to: 'tips#favorite'
           post 'unfavourite', to: 'tips#unfavourite'
         end
