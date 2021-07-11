@@ -24,7 +24,6 @@ class Api::V1::UsersController < ApiController
     user = User.new(user_params)
 
     if user.save
-      user.reload
       render json: { token: JsonWebToken.encode(sub: user.id) }, status: 200
     else
       render json: { message: user.errors.full_messages }, status: 400
@@ -39,7 +38,7 @@ class Api::V1::UsersController < ApiController
   end
 
   def edit
-    user = User.find_by(params[:id])
+    User.find_by(params[:id])
   end
 
   def update
