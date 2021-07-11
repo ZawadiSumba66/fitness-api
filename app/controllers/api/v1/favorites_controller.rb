@@ -1,4 +1,4 @@
-class API::V1::FavoritesController < ApiController
+class Api::V1::FavoritesController < ApiController
   def index
     favourites = current_user.favourited_houses
     render json: favourites, status: 200
