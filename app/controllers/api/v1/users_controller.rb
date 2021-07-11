@@ -21,24 +21,20 @@ class Api::V1::UsersController < ApiController
       end
     end
 
-    avatar = params[:user][:avatar]
-    params = user_params.except(:avatar)
-    user.avatar.attach(avatar) if avatar.present?
-    url = User.avatar_url(user.avatar)
-    user = User.create(params)
+    user = User.new(user_params)
 
-    if @user.save
-      render json: { token: JsonWebToken.encode(sub: user.id), avatar_url: url }, status: 200
+    if user.save
+      user.reload
+      render json: { token: JsonWebToken.encode(sub: user.id) }, status: 200
     else
-      render json: { message: @user.errors.full_messages }, status: 400
+      render json: { message: user.errors.full_messages }, status: 400
     end
   end
 
   def show
     user = User.find(params[:id])
     favorites = user.favorited_tips.order('created_at DESC')
-    url = User.avatar_url(user.avatar)
-    response = { user: user, favorites: favorites, avatar_url: url }
+    response = { user: user, favorites: favorites }
     render json: response
   end
 
@@ -47,13 +43,9 @@ class Api::V1::UsersController < ApiController
   end
 
   def update
-    avatar = params[:user][:avatar]
-    params = user_params.except(:avatar)
-    user.avatar.attach(avatar) if avatar.present?
-    url = User.avatar_url(user.avatar)
     user = User.find(params[:id])
-    if user.update(params)
-      render json: { user: user, avatar_url: url }, status: 200
+    if user.update(user_params)
+      render json: { user: user }, status: 200
     else
       render json: { message: 'User was not updated!' }, status: 400
     end

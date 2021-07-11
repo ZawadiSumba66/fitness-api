@@ -7,16 +7,7 @@ class Api::V1::TipsController < ApiController
   end
 
   def create
-    image = params[:tip][:tip_image]
-    params = tip_params.except(:tip_image)
-    tip = current_user.tips.create(params)
-    if image.present?
-      tip.images.attach(image)
-    else
-      @error = ['Image can`t be blank']
-    end
-    tip_url = tip.image_url(tip.images)
-    tip.image = tip_url
+    tip = current_user.tips.create(tip_params)
     if tip.save
       render json: { tip: tip }, status: 200
     else
@@ -38,7 +29,6 @@ class Api::V1::TipsController < ApiController
       render json: { message: 'Tip has already been added to favorites' }, status: forbidden
     else
       tip = Tip.find_by(params[:tip_id])
-      tip.image = tip.image_url(tip.images)
       current_user.favorited_tips << tip
       render json: { message: 'Tip successfully added to favorites' }
     end
@@ -53,6 +43,6 @@ class Api::V1::TipsController < ApiController
   private
 
   def tip_params
-    params.require(:tip).permit(:name, :description, :benefits, :image, :instructions, :tip_image)
+    params.require(:tip).permit(:name, :description, :benefits, :image, :instructions)
   end
 end
