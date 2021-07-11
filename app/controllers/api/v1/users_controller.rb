@@ -2,17 +2,6 @@ class Api::V1::UsersController < ApiController
   skip_before_action :authenticate_user!
 
   def create
-    if params[:user][:email].nil?
-      render json: { message: 'User request must contain the user email.' }, status: 400
-      return
-    elsif params[:user][:username].nil?
-      render json: { message: 'User request must contain the username.' }, status: 400
-      return
-    elsif params[:user][:password].nil?
-      render json: { message: 'User request must contain the user password.' }, status: 400
-      return
-    end
-
     if params[:user][:email]
       duplicate_user = User.find_by_email(params[:email])
       unless duplicate_user.nil?
