@@ -280,7 +280,6 @@ Devise.setup do |config|
   config.warden do |manager|
     # manager.intercept_401 = false
     manager.strategies.add :jwt, Devise::Strategies::JWT
-    # manager.default_strategies(scope: :user).unshift :some_external_strategy
     manager.default_strategies(scope: :user).unshift :jwt
   end
 
@@ -310,21 +309,22 @@ Devise.setup do |config|
   # When set to false, does not sign a user in automatically after their password is
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
-  module Devise
-    module Strategies
-      class JWT < Base
-        def valid?
-          request.headers['Authorization'].present?
-        end
-  def authenticate!
-          token = request.headers.fetch('Authorization', '').split(' ').last
-          payload = JsonWebToken.decode(token)
-          success! User.find(payload['sub'])
-        rescue ::JWT::ExpiredSignature
-          fail! 'Auth token has expired'
-        rescue ::JWT::DecodeError
-          fail! 'Auth token is invalid'
-        end
+end
+
+module Devise
+  module Strategies
+    class JWT < Base
+      def valid?
+        request.headers['Authorization'].present?
+      end
+    def authenticate!
+        token = request.headers.fetch('Authorization', '').split(' ').last
+        payload = JsonWebToken.decode(token)
+        success! User.find(payload['sub'])
+      rescue ::JWT::ExpiredSignature
+        fail! 'Auth token has expired'
+      rescue ::JWT::DecodeError
+        fail! 'Auth token is invalid'
       end
     end
   end
