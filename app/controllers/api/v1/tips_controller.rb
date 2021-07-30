@@ -43,6 +43,6 @@ class Api::V1::TipsController < ApiController
   private
 
   def tip_params
-    params.require(:tip).permit(:name, :description, :benefits, :image, :instructions)
+    params.require(:tip).permit(:title, :description, :benefits, :image, :instructions)
   end
 end

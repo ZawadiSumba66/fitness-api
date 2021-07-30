@@ -6,6 +6,7 @@ Rails.application.routes.draw do
         post :auth, to: 'authentication#create'
         resources :users
         resources :favorites
+        resources :tips
         resources :tips do
           post 'favorite', to: 'tips#favorite'
           post 'unfavourite', to: 'tips#unfavourite'
