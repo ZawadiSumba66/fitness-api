@@ -3,5 +3,5 @@ class Tip < ApplicationRecord
   has_many :favoritors, through: :favorites, source: :user
   belongs_to :user
   validates_presence_of :title, :description, :benefits, :instructions
-  mount_uploader :image, ImageUploader
+  # include ImageUploader::Attachment(:image)
 end

@@ -1,9 +1,23 @@
 class Api::V1::UsersController < ApiController
   skip_before_action :authenticate_user!
-
+  
   def create
-    user = User.create(user_params)
+    if params[:user][:email].nil?
+      render json: { message: ['User request must contain the user email.'] }, status: 400
+      return
+    elsif params[:user][:password].nil?
+      render  json: { message: ['User request must contain the user password.'] }, status: 400
+      return
+    end
 
+    if params[:user][:email]
+      duplicate_user = User.find_by_email(params[:user][:email])
+      unless duplicate_user.nil?
+        render json: { message: ['Duplicate email. A user already exists with that email address.'] }, status: 409
+        return
+      end
+    end
+    user = User.create(user_params)
     if user.save
       render json: { token: JsonWebToken.encode(sub: user.id) }, status: 200
     else
@@ -34,6 +48,6 @@ class Api::V1::UsersController < ApiController
   private
 
   def user_params
-    params.require(:user).permit(:username, :email, :password, :password_confirmation, :avatar)
+    params.require(:user).permit(:username, :email, :password, :password_confirmation, :image)
   end
 end

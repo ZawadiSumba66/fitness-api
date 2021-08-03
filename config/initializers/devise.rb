@@ -14,7 +14,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = '6bb0b9f413dea000fb0b84a3a56b69dbff3d713728569ad15c14179a67eb7f43b22964fd20a94c762c7a633a30231d6731d0a13b7f6030eeff01b77a785d72ee'
+  # config.secret_key = 'eee4b9d6ddef8bf4871b22a79b6e1330c7817574fa31847463a33df70665a20ca04dc5aaa96ba7f4864d9d7bb4b21d27f1d9dd9e7aedaf5328f640683ed39552'
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -126,7 +126,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 12
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = 'f67347462a2d439b265f0089deb7481d70b514647b0873bbbbbf750c0bd1f4f95041615c217ffec9158c6d05e8b5ff861f0b31dd47badeb07ff57881d47a7f7a'
+  # config.pepper = '22f057844bea716c243762ad56c0faca03e5dae9145f786f7d94c5db1db9762212f67ef890eac0e3895cee94453e32def28e191a8cbbfd192cbc47395ef66c29'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false
@@ -283,6 +283,7 @@ Devise.setup do |config|
     manager.default_strategies(scope: :user).unshift :jwt
   end
 
+
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine
   # is mountable, there are some extra configurations to be taken into account.
@@ -315,16 +316,17 @@ module Devise
   module Strategies
     class JWT < Base
       def valid?
-        request.headers['Authorization'].present?
+        request.headers["Authorization"].present?
       end
-    def authenticate!
-        token = request.headers.fetch('Authorization', '').split(' ').last
+
+      def authenticate!
+        token = request.headers.fetch("Authorization", "").split(" ").last
         payload = JsonWebToken.decode(token)
-        success! User.find(payload['sub'])
-      rescue ::JWT::ExpiredSignature
-        fail! 'Auth token has expired'
-      rescue ::JWT::DecodeError
-        fail! 'Auth token is invalid'
+        success! User.find(payload["sub"])
+        rescue ::JWT::ExpiredSignature
+          fail! "Auth token has expired"
+        rescue ::JWT::DecodeError
+          fail! "Auth token is invalid"
       end
     end
   end

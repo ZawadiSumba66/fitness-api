@@ -1,6 +1,5 @@
 class Api::V1::TipsController < ApiController
-  skip_before_action :authenticate_user!
-
+   skip_before_action :authenticate_user!
   def index
     tips = Tip.all
     render json: tips, status: 200
